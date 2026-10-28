@@ -1,6 +1,14 @@
 (function(){
   document.documentElement.classList.add('js');
 
+  /* Лоадер: скрыть после загрузки страницы, но не раньше, чем логотип успеет проявиться */
+  (function(){
+    var el=document.getElementById('loader'); if(!el) return;
+    var t0=Date.now(), MIN=900;
+    function hide(){setTimeout(function(){el.classList.add('done');setTimeout(function(){el.remove()},600)},Math.max(0,MIN-(Date.now()-t0)))}
+    if(document.readyState==='complete') hide(); else window.addEventListener('load',hide);
+  })();
+
   /* Цели аналитики: Яндекс.Метрика (если подключена) + dataLayer */
   var YM_ID = null; // ← номер счётчика Метрики statussk.ru
   function goal(name, params){
