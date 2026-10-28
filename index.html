@@ -680,15 +680,16 @@
         <span class="sec-label mono">Как начинаем</span>
         <h2 id="h-steps">От обсуждения задач до запуска системы</h2>
       </div>
-      <div class="gantt rv" id="route" role="list" aria-label="Порядок начала работы">
-        <div class="g-head" aria-hidden="true"><span class="mono">Шаг</span><div class="g-ticks"><span class="mono">01</span><span class="mono">02</span><span class="mono">03</span><span class="mono">04</span><span class="mono">05</span><span class="mono">06</span></div></div>
-        <div class="g-row" role="listitem" style="--i:0"><div class="g-name"><span class="mono">01</span><b>Вы оставляете заявку</b></div><div class="g-lane"><span class="g-arrow" aria-hidden="true"></span><span class="g-bar mono" aria-hidden="true"><span>Заявка</span></span></div></div>
-        <div class="g-row" role="listitem" style="--i:1"><div class="g-name"><span class="mono">02</span><b>Уточняем задачи и текущие процессы</b></div><div class="g-lane"><span class="g-arrow" aria-hidden="true"></span><span class="g-bar mono" aria-hidden="true"><span>Обследование</span></span></div></div>
-        <div class="g-row" role="listitem" style="--i:2"><div class="g-name"><span class="mono">03</span><b>Показываем платформу или обсуждаем её возможности</b></div><div class="g-lane"><span class="g-arrow" aria-hidden="true"></span><span class="g-bar mono" aria-hidden="true"><span>Демонстрация</span></span></div></div>
-        <div class="g-row" role="listitem" style="--i:3"><div class="g-name"><span class="mono">04</span><b>Согласовываем состав работ, сроки и стоимость</b></div><div class="g-lane"><span class="g-arrow" aria-hidden="true"></span><span class="g-bar mono" aria-hidden="true"><span>Согласование</span></span></div></div>
-        <div class="g-row" role="listitem" style="--i:4"><div class="g-name"><span class="mono">05</span><b>Готовим предложение по внедрению</b></div><div class="g-lane"><span class="g-arrow" aria-hidden="true"></span><span class="g-bar mono" aria-hidden="true"><span>Предложение</span></span></div></div>
-        <div class="g-row" role="listitem" style="--i:5"><div class="g-name"><span class="mono">06</span><b>После согласования начинаем реализацию</b></div><div class="g-lane"><span class="g-arrow" aria-hidden="true"></span><span class="g-ms mono" aria-hidden="true"><i></i><span>Старт</span></span></div></div>
-        <div class="g-now" aria-hidden="true"><span class="mono">Вы здесь</span></div>
+      <div class="flow rv" id="route">
+        <div class="fl-lanes" aria-hidden="true"><span class="mono">Вы</span><span class="mono">Вместе</span><span class="mono">«Статус»</span></div>
+        <ol class="fl-steps" aria-label="Порядок начала работы">
+          <li class="fl-step is-here" style="--i:0;--c:2;--r:1;--dy:1;--ady:1"><span class="fl-node mono" aria-hidden="true">01</span><span class="fl-tag mono" aria-hidden="true">Вы здесь</span><span class="fl-who mono">Ваш шаг</span><h3>Вы оставляете заявку</h3></li>
+          <li class="fl-step" style="--i:1;--c:3;--r:2;--dy:1;--ady:1"><span class="fl-node mono" aria-hidden="true">02</span><span class="fl-who mono">Вместе</span><h3>Уточняем задачи и текущие процессы</h3></li>
+          <li class="fl-step" style="--i:2;--c:4;--r:3;--dy:-1;--ady:1"><span class="fl-node mono" aria-hidden="true">03</span><span class="fl-who mono">Делаем мы</span><h3>Показываем платформу или обсуждаем её возможности</h3></li>
+          <li class="fl-step" style="--i:3;--c:5;--r:2;--dy:1;--ady:1"><span class="fl-node mono" aria-hidden="true">04</span><span class="fl-who mono">Вместе</span><h3>Согласовываем состав работ, сроки и стоимость</h3></li>
+          <li class="fl-step" style="--i:4;--c:6;--r:3;--dy:-1;--ady:1"><span class="fl-node mono" aria-hidden="true">05</span><span class="fl-who mono">Делаем мы</span><h3>Готовим предложение по внедрению</h3></li>
+          <li class="fl-step is-finish" style="--i:5;--c:7;--r:2;--dy:0;--ady:0"><span class="fl-node mono" aria-hidden="true">06</span><span class="fl-tag mono" aria-hidden="true">Старт</span><span class="fl-who mono">Вместе</span><h3>После согласования начинаем реализацию</h3></li>
+        </ol>
       </div>
       <div class="route-foot rv">
         <p class="steps-note">Последовательность и состав этапов могут меняться в зависимости от проекта.</p>
