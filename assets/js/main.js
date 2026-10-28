@@ -269,4 +269,65 @@
       items.forEach(function(el){ if(el.getBoundingClientRect().top<innerHeight*.92) show(el); else io.observe(el); });
     } else items.forEach(show);
   });
+  /* ── WOW-слой ── */
+  var fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  /* Плавная прокрутка (Lenis): только мышь/тачпад и без «уменьшения движения»; якоря — с учётом шапки */
+  if(motion&&fine&&window.Lenis){
+    var head=document.querySelector('.site-header');
+    var lenis=new Lenis({lerp:.1,anchors:{offset:-((head?head.offsetHeight:64)+8)}});
+    (function raf(t){lenis.raf(t);requestAnimationFrame(raf)})(0);
+    var mnav=document.getElementById('mnav'); if(mnav) mnav.setAttribute('data-lenis-prevent','');
+  }
+
+  /* Кнопки: подпись режем на буквы (читалкам — целиком, через .sr) */
+  if(motion&&fine) [].slice.call(document.querySelectorAll('.btn')).forEach(function(b){
+    var holder=b.querySelector('#f-submit-text')||b, tn=[].slice.call(holder.childNodes).filter(function(n){return n.nodeType===3&&n.textContent.trim()})[0];
+    if(!tn||holder.id==='f-submit-text') return; /* подпись отправки меняется скриптом формы — не трогаем */
+    var txt=tn.textContent.trim(), w=document.createElement('span'), sr=document.createElement('span'), vis=document.createElement('span');
+    sr.className='sr'; sr.textContent=txt; vis.className='bt'; vis.setAttribute('aria-hidden','true');
+    txt.split('').forEach(function(c,i){var ch=document.createElement('span'); ch.className='ch'; ch.style.setProperty('--d',(i*.018)+'s'); ch.textContent=c===' '?' ':c; vis.appendChild(ch)});
+    w.appendChild(sr); w.appendChild(vis); holder.replaceChild(w,tn); w.style.display='contents';
+  });
+
+  /* Перекрестие над слайдером: плавно догоняет курсор, без курсора стоит в своей точке */
+  (function(){
+    var m=document.querySelector('.hero-media'); if(!m||!motion||!fine) return;
+    var c=document.createElement('div'); c.className='hm-cross'; c.setAttribute('aria-hidden','true');
+    c.innerHTML='<i class="h"></i><i class="v"></i><b></b><span class="mono"></span>'; m.appendChild(c);
+    var lab=c.querySelector('span'), tx=0, ty=0, x=0, y=0, running=false;
+    function home(){var r=m.getBoundingClientRect(); tx=r.width*.68; ty=r.height*.56}
+    home(); x=tx; y=ty;
+    function tick(){
+      x+=(tx-x)*.12; y+=(ty-y)*.12;
+      c.style.setProperty('--x',x.toFixed(1)+'px'); c.style.setProperty('--y',y.toFixed(1)+'px');
+      lab.textContent='X '+String(Math.round(x)).padStart(4,'0')+' · Y '+String(Math.round(y)).padStart(4,'0');
+      if(Math.abs(tx-x)>.3||Math.abs(ty-y)>.3) requestAnimationFrame(tick); else running=false;
+    }
+    function go(){ if(!running){running=true;requestAnimationFrame(tick)} }
+    m.addEventListener('pointermove',function(e){var r=m.getBoundingClientRect(); tx=e.clientX-r.left; ty=e.clientY-r.top; go()});
+    m.addEventListener('pointerleave',function(){home();go()});
+    addEventListener('resize',function(){home();go()});
+    afterLoader(function(){setTimeout(function(){m.classList.add('cross-on');go()},600)});
+  })();
+
+  /* По прокрутке: финальный заголовок проявляется по словам, фото — лёгкий параллакс */
+  (function(){
+    if(!motion) return;
+    var fh=document.getElementById('h-final'), words=fh&&fh.classList.contains('split')?[].slice.call(fh.querySelectorAll('.wi')):[];
+    if(words.length) fh.classList.add('scrub');
+    var px=[].slice.call(document.querySelectorAll('.fit-media img,.why-photo img'));
+    px.forEach(function(i){i.classList.add('px')});
+    var queued=false;
+    function update(){
+      queued=false; var vh=innerHeight;
+      if(words.length){
+        var r=fh.getBoundingClientRect(), end=scrollY+vh>=root.scrollHeight-4, p=end?1:Math.min(1,Math.max(0,(vh*.92-r.top)/(vh*.4)));
+        words.forEach(function(w,i){var k=Math.min(1,Math.max(0,p*words.length-i)); w.style.setProperty('--o',(.14+.86*k).toFixed(3))});
+      }
+      px.forEach(function(i){var r=i.parentNode.getBoundingClientRect(); if(r.bottom<0||r.top>vh) return; var k=(r.top+r.height/2-vh/2)/(vh/2+r.height/2); i.style.setProperty('--py',(k*-7).toFixed(2)+'%')});
+    }
+    function q(){ if(!queued){queued=true;requestAnimationFrame(update)} }
+    addEventListener('scroll',q,{passive:true}); addEventListener('resize',q); update();
+  })();
 })();
