@@ -574,3 +574,23 @@ h2.scrub .wi{transform:none!important;transition:opacity .25s linear!important;o
 /* параллакс фото */
 .fit-media,.why-photo{overflow:hidden}
 .fit-media img.px,.why-photo img.px{inset:-9% 0;height:118%;translate:0 var(--py,0)}
+
+/* Этапы внедрения: ячейка оживает при наведении — подложка выезжает слева, по верхней границе прочерчивается сигнальная линия с узлами */
+.stage{position:relative;isolation:isolate}
+.stage::before{content:"";position:absolute;z-index:-1;inset:0 -1.25rem;background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(255,255,255,.025));transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease)}
+.stage::after{content:"";position:absolute;left:-1.25rem;right:-1.25rem;top:-1px;height:7px;margin-top:-3px;pointer-events:none;
+  background:linear-gradient(var(--signal),var(--signal)) left/6px 100% no-repeat,linear-gradient(var(--signal),var(--signal)) right/6px 100% no-repeat,linear-gradient(var(--signal),var(--signal)) left center/100% 2px no-repeat;
+  clip-path:inset(0 100% 0 0);transition:clip-path .7s var(--ease)}
+.stage-n,.stage h3,.stage-res{transition:transform .5s var(--ease),color .3s,border-color .3s}
+.stage li::before{transition:width .4s var(--ease),background .3s;transition-delay:calc(var(--k,0) * 50ms)}
+.stage li:nth-child(2){--k:1}.stage li:nth-child(3){--k:2}.stage li:nth-child(4){--k:3}.stage li:nth-child(5){--k:4}
+.stage li{transition:color .3s;transition-delay:calc(var(--k,0) * 50ms)}
+@media (hover:hover){
+  .stage:hover::before{transform:none}
+  .stage:hover::after{clip-path:inset(0)}
+  .stage:hover .stage-n{transform:translateX(0.5rem)}
+  .stage:hover h3{color:#fff7e0;transform:translateX(0.25rem)}
+  .stage:hover li{color:#dbe6ef}
+  .stage:hover li::before{width:0.875rem;background:var(--signal)}
+  .stage:hover .stage-res{border-left-width:4px;transform:translateX(0.25rem)}
+}
