@@ -296,7 +296,7 @@
     var c=document.createElement('div'); c.className='hm-cross'; c.setAttribute('aria-hidden','true');
     c.innerHTML='<i class="h"></i><i class="v"></i><b></b><span class="mono"></span>'; m.appendChild(c);
     var lab=c.querySelector('span'), tx=0, ty=0, x=0, y=0, running=false;
-    function home(){var r=m.getBoundingClientRect(); tx=r.width*.68; ty=r.height*.56}
+    function home(){var r=m.getBoundingClientRect(); tx=r.width*.42; ty=r.height*.6}
     home(); x=tx; y=ty;
     function tick(){
       x+=(tx-x)*.12; y+=(ty-y)*.12;

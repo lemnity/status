@@ -550,7 +550,7 @@ main::before{content:"";position:absolute;top:0;bottom:0;left:var(--gx);right:va
 @media (max-width:1180px){main::before,.sec::after{display:none}}
 
 /* перекрестие в слайдере первого экрана */
-.hm-cross{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .5s var(--ease)}
+.hm-cross{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .5s var(--ease)}
 .hero-media.cross-on .hm-cross{opacity:1}
 .hm-cross i{position:absolute;background:rgba(255,255,255,.45)}
 .hm-cross .h{left:0;right:0;top:0;height:1px;transform:translateY(var(--y))}
