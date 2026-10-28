@@ -655,3 +655,13 @@ h2.scrub .wi{transform:none!important;transition:opacity .25s linear!important;o
 main,.site-footer{transition:opacity .5s var(--ease)}
 .site-header.open~main,.site-header.open~.site-footer{opacity:.25}
 @media (min-width:1181px){.mobile-nav{display:none}}
+
+/* Модули: ховер свёрнутой колонки чуть заметнее — синеватый фон, полоска по верхней кромке, название синеет */
+.acc-item::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--navy);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease);pointer-events:none}
+.acc-name{transition:opacity .3s .35s,color .25s}
+@media (hover:hover){
+  .acc-item:not(.open):hover{background:#e8eff5}
+  .acc-item:not(.open):hover::after{transform:none}
+  .acc-item:not(.open):hover .acc-name{color:var(--navy)}
+}
+@media (max-width:1020px){.acc-item::after{display:none}}
