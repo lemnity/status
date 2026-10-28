@@ -594,3 +594,49 @@ h2.scrub .wi{transform:none!important;transition:opacity .25s linear!important;o
   .stage:hover li::before{width:0.875rem;background:var(--signal)}
   .stage:hover .stage-res{border-left-width:4px;transform:translateX(0.25rem)}
 }
+
+/* ── Слой 2 (по мотивам «осевой» подачи): номера разделов, скобки на кнопках, меню-панель ── */
+/* «01 / Задачи» */
+.sec-label .sn{font-weight:600;color:var(--navy)}
+.sec-label .ss{color:var(--muted);opacity:.6}
+.sec-label{color:var(--ink-2)}
+.sec.dark .sec-label{color:#dbe6ef}
+.sec.dark .sec-label .sn{color:var(--signal)}
+.sec.dark .sec-label .ss{color:#7f98ab}
+.sec-label::before{background:var(--navy)}
+.sec.dark .sec-label::before{background:var(--signal)}
+
+/* кнопки: скобки [ ] проявляются и тянутся к курсору */
+.bk{position:absolute;inset:0.4375rem;pointer-events:none;opacity:0;transform:translate(var(--bx,0px),var(--by,0px));transition:opacity .25s,transform .2s var(--ease)}
+.bk::before,.bk::after{content:"";position:absolute;top:0;bottom:0;width:0.375rem;border:1.5px solid var(--signal)}
+.bk::before{left:0;border-right:0}
+.bk::after{right:0;border-left:0}
+.btn:hover .bk,.btn:focus-visible .bk{opacity:1}
+.btn-signal .bk::before,.btn-signal .bk::after{border-color:var(--night)}
+.btn-line:not(:hover) .bk::before,.btn-line:not(:hover) .bk::after{border-color:var(--navy)}
+
+/* бургер ↔ крестик */
+.burger path{transform-box:fill-box;transform-origin:center;transition:transform .35s var(--ease),opacity .2s}
+.site-header.open .burger .l1{transform:translateY(5px) rotate(45deg)}
+.site-header.open .burger .l2{opacity:0;transform:scaleX(.2)}
+.site-header.open .burger .l3{transform:translateY(-5px) rotate(-45deg)}
+
+/* мобильное меню: тёмная панель раскрывается от правой кромки, пункты пронумерованы и выезжают лесенкой; страница под ней гаснет */
+.mobile-nav{display:block;visibility:hidden;height:calc(100dvh - var(--head-h) - env(safe-area-inset-top,0px));background:var(--night);border:0;box-shadow:none;
+  clip-path:inset(0 0 0 100%);transition:clip-path .6s cubic-bezier(.7,0,.2,1),visibility 0s .6s}
+.site-header.open .mobile-nav{visibility:visible;clip-path:inset(0);transition:clip-path .6s cubic-bezier(.7,0,.2,1),visibility 0s}
+.mobile-nav nav{counter-reset:mn;padding-block:1rem 2rem}
+.mobile-nav a{position:relative;display:flex;align-items:baseline;gap:1rem;color:#fff;font-size:1.375rem;line-height:1.2;font-weight:600;letter-spacing:-.01em;padding:1rem 0;border-bottom:1px solid var(--rule-dark);
+  opacity:0;transform:translateY(0.75rem);transition:opacity .4s var(--ease),transform .5s var(--ease),color .2s}
+.mobile-nav a:not(.m-phone)::before{counter-increment:mn;content:counter(mn,decimal-leading-zero);font:500 max(0.6875rem,11px)/1 var(--mono);color:#7f98ab;letter-spacing:.04em;min-width:1.25rem}
+.mobile-nav a[aria-current="page"]{color:var(--signal)}
+.mobile-nav a[aria-current="page"]::before{color:var(--signal)}
+.mobile-nav .m-phone{color:var(--signal);font-size:1.125rem;padding-top:1.5rem}
+.site-header.open .mobile-nav a{opacity:1;transform:none}
+.mobile-nav a:nth-child(1){transition-delay:.18s}.mobile-nav a:nth-child(2){transition-delay:.22s}.mobile-nav a:nth-child(3){transition-delay:.26s}
+.mobile-nav a:nth-child(4){transition-delay:.3s}.mobile-nav a:nth-child(5){transition-delay:.34s}.mobile-nav a:nth-child(6){transition-delay:.38s}
+.mobile-nav a:nth-child(7){transition-delay:.42s}.mobile-nav a:nth-child(8){transition-delay:.46s}.mobile-nav a:nth-child(9){transition-delay:.5s}.mobile-nav a:nth-child(10){transition-delay:.54s}
+.site-header:not(.open) .mobile-nav a{transition-delay:0s}
+main,.site-footer{transition:opacity .5s var(--ease)}
+.site-header.open~main,.site-header.open~.site-footer{opacity:.25}
+@media (min-width:1181px){.mobile-nav{display:none}}

@@ -330,4 +330,13 @@
     function q(){ if(!queued){queued=true;requestAnimationFrame(update)} }
     addEventListener('scroll',q,{passive:true}); addEventListener('resize',q); update();
   })();
+  /* ── Слой 2: скобки на кнопках (только мышь, без «уменьшения движения») ── */
+  if(motion&&fine){
+    /* скобки: появляются при наведении и смещаются к курсору на 3–4 px */
+    [].slice.call(document.querySelectorAll('.btn')).forEach(function(b){
+      var bk=document.createElement('span'); bk.className='bk'; bk.setAttribute('aria-hidden','true'); b.appendChild(bk);
+      b.addEventListener('pointermove',function(e){ var r=b.getBoundingClientRect(); bk.style.setProperty('--bx',(((e.clientX-r.left)/r.width-.5)*8).toFixed(1)+'px'); bk.style.setProperty('--by',(((e.clientY-r.top)/r.height-.5)*4).toFixed(1)+'px') });
+      b.addEventListener('pointerleave',function(){ bk.style.removeProperty('--bx'); bk.style.removeProperty('--by') });
+    });
+  }
 })();
