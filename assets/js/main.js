@@ -141,40 +141,34 @@
     {k:'cde',name:'Информационная модель и среда общих данных',text:'Работа с информационной моделью объекта и доступ участников проекта к общей среде данных, в пределах доступного функционала платформы.',
      rows:[['Модель · пролётное строение','ok','Актуальна'],['Модель · опоры','wait','Обновление'],['Доступ подрядчиков','ok','Настроен'],['Связь модели с документами','new','В работе']]}
   ];
-  var list=document.querySelector('.mod-list');
-  var chev='<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-  MODULES.forEach(function(m,i){
-    var b=document.createElement('button');
-    b.type='button';b.className='mod';b.id='tab-'+m.k;b.setAttribute('role','tab');
-    b.setAttribute('aria-controls','mod-panel');b.setAttribute('aria-selected',i===0?'true':'false');b.tabIndex=i===0?0:-1;
-    b.innerHTML='<span class="mono">'+String(i+1).padStart(2,'0')+'</span><span class="mod-name">'+m.name+'</span>'+chev;
-    b.addEventListener('click',function(){select(i,false)});
-    list.appendChild(b);
-  });
-  var tabs=[].slice.call(list.children), current=-1;
-  list.addEventListener('keydown',function(e){
-    var i=tabs.indexOf(document.activeElement); if(i<0) return;
-    var n=null;
-    if(e.key==='ArrowDown'||e.key==='ArrowRight') n=(i+1)%tabs.length;
-    if(e.key==='ArrowUp'||e.key==='ArrowLeft') n=(i-1+tabs.length)%tabs.length;
-    if(e.key==='Home') n=0; if(e.key==='End') n=tabs.length-1;
-    if(n!==null){e.preventDefault();select(n,true)}
-  });
+  /* аккордеон: одна колонка всегда раскрыта; стрелки переключают модули */
   function esc(s){return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-  function select(i,focus){
+  var acc=document.getElementById('acc'), items=[], current=-1;
+  var plus='<svg class="acc-plus" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg>';
+  MODULES.forEach(function(m,i){
+    var n=String(i+1).padStart(2,'0'), it=document.createElement('div'); it.className='acc-item';
+    it.innerHTML='<button type="button" class="acc-tab" id="acc-'+m.k+'" aria-expanded="false" aria-controls="accb-'+m.k+'">'+plus+
+      '<span class="acc-name">'+esc(m.name)+'</span><span class="acc-num" aria-hidden="true">'+(i+1)+'</span></button>'+
+      '<div class="acc-body" id="accb-'+m.k+'" role="region" aria-labelledby="acc-'+m.k+'">'+
+        '<div class="mod-stage blueprint"><span class="mono cap">Интерфейс модуля · '+n+'</span>'+
+          '<div class="ui mod-shot" aria-hidden="true"><div class="ui-bar"><span class="ui-dots"><i></i><i></i><i></i></span><span class="ui-title">'+esc(m.name)+'</span><span class="ui-tag">MStroy</span></div>'+
+          '<div class="ui-body"><div class="ui-side">'+MODULES.map(function(x,j){return '<span'+(j===i?' class="on"':'')+'>'+esc(x.name)+'</span>'}).join('')+'</div>'+
+          '<div class="ui-main"><div class="shot-rows">'+m.rows.map(function(r){return '<div class="shot-row"><span>'+esc(r[0])+'</span><span class="pill '+r[1]+'">'+esc(r[2])+'</span></div>'}).join('')+'</div></div></div></div></div>'+
+        '<div><h3>'+esc(m.name)+'</h3><p>'+esc(m.text)+'</p></div></div>';
+    var btn=it.querySelector('.acc-tab');
+    btn.addEventListener('click',function(){select(i)});
+    btn.addEventListener('keydown',function(e){
+      var k=null; if(e.key==='ArrowRight'||e.key==='ArrowDown') k=(i+1)%MODULES.length; if(e.key==='ArrowLeft'||e.key==='ArrowUp') k=(i-1+MODULES.length)%MODULES.length;
+      if(e.key==='Home') k=0; if(e.key==='End') k=MODULES.length-1;
+      if(k!==null){e.preventDefault();select(k);items[k].querySelector('.acc-tab').focus()}
+    });
+    acc.appendChild(it); items.push(it);
+  });
+  function select(i){
     if(i===current) return; current=i;
-    var m=MODULES[i];
-    tabs.forEach(function(t,j){t.setAttribute('aria-selected',j===i?'true':'false');t.tabIndex=j===i?0:-1});
-    if(focus) tabs[i].focus();
-    document.getElementById('mod-panel').setAttribute('aria-labelledby','tab-'+m.k);
-    document.getElementById('mod-title').textContent=m.name;
-    document.getElementById('mod-text').textContent=m.text;
-    document.getElementById('shot-title').textContent=m.name;
-    document.getElementById('shot-side').innerHTML=MODULES.map(function(x,j){return '<span'+(j===i?' class="on"':'')+'>'+esc(x.name)+'</span>'}).join('');
-    document.getElementById('shot-rows').innerHTML=m.rows.map(function(r){return '<div class="shot-row"><span>'+esc(r[0])+'</span><span class="pill '+r[1]+'">'+esc(r[2])+'</span></div>'}).join('');
-    ['mod-desc','shot-rows'].forEach(function(id){var el=document.getElementById(id);el.classList.remove('fade');void el.offsetWidth;el.classList.add('fade')});
+    items.forEach(function(it,j){ it.classList.toggle('open',j===i); var b=it.querySelector('.acc-tab'); b.setAttribute('aria-expanded',j===i?'true':'false'); b.setAttribute('aria-disabled',j===i?'true':'false'); });
   }
-  select(0,false);
+  select(0);
 
   /* Форма заявки */
   var form=document.getElementById('lead-form'), started=false, t0=Date.now();

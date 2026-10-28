@@ -233,25 +233,30 @@ ul,ol{margin:0;padding:0;list-style:none}
 .cta-row{margin-top:3.5rem;display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;padding-top:2rem;border-top:1px solid var(--rule-dark)}
 .cta-row h3{font-size:clamp(1.375rem,2.4vw,1.875rem);color:#fff;font-weight:700;letter-spacing:-.01em;max-width:28ch;line-height:1.2}
 
-/* 4. Модули */
-.modules{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:3.5rem;align-items:start}
-.mod-list{border-top:1px solid var(--ink)}
-.mod{display:grid;grid-template-columns:2.75rem 1fr auto;gap:0.75rem;align-items:center;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--rule);padding:1.125rem 0.25rem 1.125rem 0.75rem;font:inherit;color:var(--ink);cursor:pointer;position:relative;min-height:4rem}
-.mod .mono{color:var(--muted);transition:color .2s}
-.mod-name{font-size:1.1875rem;font-weight:600;line-height:1.25;transition:transform .35s var(--ease),color .2s}
-.mod .chev{width:1.25rem;height:1.25rem;stroke:var(--navy);fill:none;stroke-width:1.8;opacity:0;transform:translateX(-0.375rem);transition:all .3s var(--ease)}
-.mod::before{content:"";position:absolute;left:0;top:-1px;bottom:-1px;width:0.1875rem;background:var(--navy);transform:scaleY(0);transition:transform .3s var(--ease)}
-.mod:hover .mod-name{transform:translateX(0.25rem)}
-.mod[aria-selected="true"] .mono{color:var(--navy)}
-.mod[aria-selected="true"] .mod-name{color:var(--navy);transform:translateX(0.375rem)}
-.mod[aria-selected="true"] .chev{opacity:1;transform:none}
-.mod[aria-selected="true"]::before{transform:none}
-.mod-panel{position:sticky;top:calc(var(--head-h) + 2rem);display:grid;grid-template-columns:minmax(0,1fr);gap:1.5rem}
-.mod-desc{display:grid;grid-template-columns:minmax(0,1fr);gap:0.75rem}
-.mod-desc h3{font-size:1.75rem;font-weight:700;letter-spacing:-.015em;line-height:1.15}
-.mod-desc p{color:var(--ink-2);font-size:1.0625rem;max-width:52ch}
-.mod-desc a{font-weight:600;font-size:0.9375rem;color:var(--navy);text-decoration:none;display:inline-flex;gap:0.5rem;align-items:center;width:fit-content;border-bottom:1.5px solid currentColor;padding-bottom:2px}
-.mod-desc a svg{width:0.875rem;height:0.875rem;stroke:currentColor;fill:none;stroke-width:2}
+/* 4. Модули: горизонтальный аккордеон — свёрнутые колонки (+, название вертикально, крупный номер), раскрытая — экран модуля и описание */
+.acc{--cw:4.75rem;display:flex;height:clamp(32rem,40vw,38rem);border:1px solid var(--ink);border-right:0}
+.acc-item{position:relative;flex:0 0 var(--cw);min-width:0;border-right:1px solid var(--ink);overflow:hidden;transition:flex-grow .7s cubic-bezier(.65,0,.25,1),background .25s}
+.acc-item.open{flex-grow:1;background:#fff}
+/* кнопка всегда занимает левую полосу шириной в свёрнутую колонку — номер не прыгает */
+.acc-tab{position:absolute;top:0;bottom:0;left:0;width:var(--cw);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0 1rem;background:transparent;border:0;cursor:pointer;color:var(--ink);font:inherit;z-index:1}
+.acc-item:not(.open):hover{background:var(--paper-2)}
+.acc-plus{width:1.75rem;height:1.75rem;flex:none;stroke:var(--muted);stroke-width:2;fill:none;transition:transform .45s var(--ease),stroke .25s,opacity .3s .35s}
+.acc-item:not(.open):hover .acc-plus{transform:rotate(90deg);stroke:var(--navy)}
+/* название: вертикально, прижато к низу над номером, по центру колонки */
+.acc-name{flex:1;min-height:0;width:100%;display:flex;justify-content:flex-start;align-items:center;padding:1.5rem 0 1rem;writing-mode:vertical-rl;transform:rotate(180deg);text-align:start;font-size:1.125rem;font-weight:700;letter-spacing:-.01em;line-height:1.15;overflow:hidden;transition:opacity .3s .35s}
+.acc-num{flex:none;font-family:var(--mono);font-size:2.75rem;font-weight:500;line-height:1;color:#a9b5bf;letter-spacing:-.04em;transition:color .3s}
+.acc-item:not(.open):hover .acc-num{color:var(--navy)}
+.acc-item.open .acc-tab{cursor:default}
+.acc-item.open .acc-plus,.acc-item.open .acc-name{opacity:0;transition:opacity .15s}
+.acc-item.open .acc-num{color:var(--navy)}
+.acc-body{position:absolute;inset:0;padding:1.75rem 1.75rem 5rem;pointer-events:none;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:1.5rem;min-width:min(46rem,70vw);opacity:0;visibility:hidden;transform:translateX(1.5rem);transition:opacity .2s,transform .4s var(--ease),visibility 0s .2s}
+.acc-item.open .acc-body{pointer-events:auto;opacity:1;visibility:visible;transform:none;transition:opacity .5s .35s,transform .7s var(--ease) .3s,visibility 0s}
+.acc-body h3{font-size:1.75rem;font-weight:700;letter-spacing:-.015em;line-height:1.15}
+.acc-body p{color:var(--ink-2);font-size:1.0625rem;max-width:58ch;margin-top:0.625rem}
+.acc-body .mod-stage{min-height:0;overflow:hidden;display:grid;align-items:center}
+.acc-foot{margin-top:1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1rem 2rem;flex-wrap:wrap}
+.acc-more{font-weight:600;font-size:0.9375rem;color:var(--navy);text-decoration:none;display:inline-flex;gap:0.5rem;align-items:center;border-bottom:1.5px solid currentColor;padding-bottom:2px}
+.acc-more svg{width:0.875rem;height:0.875rem;stroke:currentColor;fill:none;stroke-width:2}
 .mod-stage{padding:2.5rem 1.75rem 1.75rem;background-color:var(--paper-2);border:1px solid var(--rule);position:relative}
 .mod-stage .cap{position:absolute;top:0.75rem;left:0.875rem;color:var(--muted);font-size:max(0.6562rem,11px)}
 .mod-shot .ui-main{min-height:12.25rem}
@@ -263,9 +268,19 @@ ul,ol{margin:0;padding:0;list-style:none}
 .pill.wait{background:#fdf1dd;color:#9a5b00}
 .pill.new{background:var(--mstroy-soft);color:var(--mstroy)}
 .mod-note{color:var(--muted);font-size:0.875rem}
-.fade{animation:fadein .45s var(--ease)}
-@keyframes fadein{from{opacity:0;transform:translateY(0.375rem)}to{opacity:1;transform:none}}
-@media (max-width:1020px){.modules{grid-template-columns:minmax(0,1fr);gap:2.25rem}.mod-panel{position:static}}
+@media (max-width:1020px){
+  .acc{flex-direction:column;height:auto;border-right:1px solid var(--ink);border-bottom:0}
+  .acc-item,.acc-item.open{flex:none;border-right:0;border-bottom:1px solid var(--ink)}
+  .acc-tab,.acc-item.open .acc-tab{position:relative;inset:auto;flex-direction:row;align-items:center;justify-content:flex-start;gap:1rem;padding:1rem 1.125rem;height:auto;width:100%;cursor:pointer}
+  .acc-num,.acc-item.open .acc-num{order:-1;font-size:1.25rem;min-width:2rem}
+  .acc-name,.acc-item.open .acc-name{display:block;opacity:1;writing-mode:horizontal-tb;transform:none;padding:0;font-size:1.0625rem;white-space:normal;flex:1}
+  .acc-plus{order:2;width:1.375rem;height:1.375rem}
+  .acc-item.open .acc-plus{opacity:1;transform:rotate(45deg);stroke:var(--navy)}
+  .acc-body{position:static;display:none;min-width:0;padding:0 1.125rem 1.5rem;transform:none}
+  .acc-item.open .acc-body{display:grid}
+  .acc-body h3{display:none}
+  .acc-body p{margin-top:0}
+}
 
 /* 5. Для кого */
 .fit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
