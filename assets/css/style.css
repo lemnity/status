@@ -516,3 +516,17 @@ ul,ol{margin:0;padding:0;list-style:none}
 @keyframes loader-bar{0%{transform:scaleX(0);transform-origin:left}55%,80%{transform:scaleX(1);transform-origin:left}80.01%{transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
 @keyframes loader-out{to{opacity:0;visibility:hidden}}
 @media (prefers-reduced-motion:reduce){.loader-fill,.loader-bar{animation:none;clip-path:none;transform:none}}
+
+/* ── ЗАГОЛОВКИ: слова выезжают из-под маски «лесенкой» (разбивка — main.js). Полоска надзаголовка прочерчивается,
+   жёлтая плашка под «MStroy» ложится после последнего слова. До ухода лоадера анимации первого экрана стоят на паузе. ── */
+.js:not(.loaded) .hero *,.js:not(.loaded) .hero *::after{animation-play-state:paused!important}
+.split .w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .04em .14em;margin:0 -.04em -.14em}
+.split .wi{display:inline-block;transform:translate3d(0,110%,0) rotate(5deg);transform-origin:0 100%;opacity:0;
+  transition:transform 1s cubic-bezier(.16,1,.3,1),opacity .6s var(--ease);transition-delay:calc(var(--i) * 60ms + 80ms)}
+.split.on .wi{transform:none;opacity:1}
+.hero h1.split .tag::after{animation:none;transform:scaleX(0);transition:transform .8s var(--ease) calc(var(--words) * 60ms + 450ms)}
+.hero h1.split.on .tag::after{transform:scaleX(1)}
+.js .sec-head.rv .sec-label::before,.js .faq-head.rv .sec-label::before{transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ease) .25s}
+.js .sec-head.rv.in .sec-label::before,.js .faq-head.rv.in .sec-label::before{transform:scaleX(1)}
+.js .sec-head.rv .sec-label,.js .faq-head.rv .sec-label{letter-spacing:.3em;transition:letter-spacing 1.1s var(--ease) .2s}
+.js .sec-head.rv.in .sec-label,.js .faq-head.rv.in .sec-label{letter-spacing:.04em}

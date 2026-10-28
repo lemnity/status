@@ -1,11 +1,16 @@
 (function(){
   document.documentElement.classList.add('js');
 
-  /* Лоадер: скрыть после загрузки страницы, но не раньше, чем логотип успеет проявиться */
+  /* Лоадер: скрыть после загрузки страницы, но не раньше, чем логотип успеет проявиться.
+     Анимации первого экрана и появление при прокрутке стартуют после него (afterLoader) */
+  var root=document.documentElement, waiting=[];
+  function afterLoader(fn){ if(root.classList.contains('loaded')) fn(); else waiting.push(fn); }
   (function(){
-    var el=document.getElementById('loader'); if(!el) return;
+    var el=document.getElementById('loader');
+    function release(){ root.classList.add('loaded'); waiting.splice(0).forEach(function(fn){fn()}); }
+    if(!el){ release(); return; }
     var t0=Date.now(), MIN=900;
-    function hide(){setTimeout(function(){el.classList.add('done');setTimeout(function(){el.remove()},600)},Math.max(0,MIN-(Date.now()-t0)))}
+    function hide(){setTimeout(function(){el.classList.add('done');setTimeout(release,250);setTimeout(function(){el.remove()},600)},Math.max(0,MIN-(Date.now()-t0)))}
     if(document.readyState==='complete') hide(); else window.addEventListener('load',hide);
   })();
 
@@ -235,10 +240,33 @@
     });
   });
 
-  /* Появление при прокрутке (то, что уже в кадре, показываем сразу) */
-  var items=document.querySelectorAll('.rv');
-  if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
-    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -6% 0px'});
-    items.forEach(function(el){ if(el.getBoundingClientRect().top<innerHeight) el.classList.add('in'); else io.observe(el); });
-  } else items.forEach(function(el){el.classList.add('in')});
+  /* Заголовки: режем на слова, каждое выезжает из-под маски с небольшой задержкой.
+     Элемент с классом tag («MStroy» в h1) идёт одним словом, остальные теги (em) режутся внутри; неразрывный пробел слова не разделяет */
+  var motion=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var heads=motion?[].slice.call(document.querySelectorAll('main h1, main h2')):[];
+  heads.forEach(function(h){
+    var n=0;
+    function wrap(node){ var w=document.createElement('span'),i=document.createElement('span'); w.className='w'; i.className='wi'; i.style.setProperty('--i',n++); w.appendChild(i); node.parentNode.replaceChild(w,node); i.appendChild(node); }
+    (function walk(el){
+      [].slice.call(el.childNodes).forEach(function(c){
+        if(c.nodeType===3){
+          var parts=c.textContent.split(/([ \t\n\r]+)/), frag=document.createDocumentFragment();
+          parts.forEach(function(t){ if(!t) return; var tn=document.createTextNode(t); frag.appendChild(tn); });
+          var nodes=[].slice.call(frag.childNodes); c.parentNode.replaceChild(frag,c);
+          nodes.forEach(function(tn){ if(/[^ \t\n\r]/.test(tn.textContent)) wrap(tn); });
+        } else if(c.nodeType===1){ if(c.classList.contains('tag')) wrap(c); else walk(c); }
+      });
+    })(h);
+    h.style.setProperty('--words',n); h.classList.add('split');
+  });
+
+  /* Появление при прокрутке (то, что уже в кадре, показываем сразу) — после лоадера */
+  afterLoader(function(){
+    var items=[].slice.call(document.querySelectorAll('.rv')).concat(heads);
+    function show(el){ el.classList.add(el.classList.contains('split')?'on':'in'); if(el.classList.contains('rv')) el.classList.add('in'); }
+    if('IntersectionObserver' in window && motion){
+      var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){show(e.target);io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+      items.forEach(function(el){ if(el.getBoundingClientRect().top<innerHeight*.92) show(el); else io.observe(el); });
+    } else items.forEach(show);
+  });
 })();
